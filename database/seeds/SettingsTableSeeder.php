@@ -88,7 +88,7 @@ class SettingsTableSeeder extends Seeder
         if (!$setting->exists) {
             $setting->fill([
                 'display_name' => __('voyager::seeders.settings.admin.title'),
-                'value'        => 'Enrutador GIS v1.0',
+                'value'        => 'Enrutador',
                 'details'      => '',
                 'type'         => 'text',
                 'order'        => $count++,

@@ -18,6 +18,17 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/', 'FrontEndController@default')->name('page_default');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/panel', function () {
+    return view('pages.panel');
+});
+
+Route::get('/buscador', function () {
+    return view('pages.buscador');
+});
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
@@ -35,6 +46,4 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/block/move_down/{block_id}', 'BlockController@move_down')->name('block_move_down');
 });
 
-Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
