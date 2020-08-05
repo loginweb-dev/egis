@@ -62,6 +62,7 @@
                 margin-bottom: 30px;
             }
         </style>
+        @laravelPWA
     </head>
     <body>
         <div class="flex-center position-ref full-height">
