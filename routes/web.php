@@ -28,7 +28,7 @@ Route::get('/panel', function () {
 
 Route::get('/buscador', function () {
     return view('pages.buscador');
-});
+})->middleware('auth');
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
@@ -44,6 +44,11 @@ Route::group(['prefix' => 'admin'], function () {
 
     Route::get('/block/move_up/{block_id}', 'BlockController@move_up')->name('block_move_up'); 
     Route::get('/block/move_down/{block_id}', 'BlockController@move_down')->name('block_move_down');
+
+
+    //-------- AJAX-----------------------------------------------------------
+    Route::get('/medidor/{code}', 'MedidoreController@medidor_first')->name('medidor_first'); 
+
 });
 
 

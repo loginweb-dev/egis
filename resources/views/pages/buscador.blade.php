@@ -22,60 +22,186 @@
             margin: 0;
             padding: 0;
         }
+
         </style>
         @laravelPWA
     </head>
     <body>
-    <div id="map"></div>
-        <div class="container my-5">
-            
+        
+        <div id="style-selector-control" class="map-control">
+            <div class="md-form input-group">
+                <input id="mytext" type="text" class="form-control" placeholder="Ingresa tu Busqueda" aria-label="Ingresa tu Busqueda" aria-describedby="MaterialButton-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-md btn-primary" type="button" id="myboton">Buscar</button>
+                </div>
+                <hr />
+                <div id="right-panel"></div>
+            </div>
         </div>
+        <div id="map"></div>
+
+          <!--  JQuery  -->
+  <script type="text/javascript" src="{{ asset('vendor/mdb/js/jquery-3.4.1.min.js') }}"></script>
+  <!--  Bootstrap tooltips  -->
+  {{--  <script type="text/javascript" src="{{ asset('vendor/mdb/popper.min.js') }}"></script>  --}}
+  <!--  Bootstrap core JavaScript  -->
+  {{--  <script type="text/javascript" src="{{ asset('vendor/mdb/bootstrap.min.js') }}"></script>  --}}
+  <!--  MDB core JavaScript  -->
+  {{--  <script type="text/javascript" src="{{ asset('vendor/mdb/js/mdb.min.js') }}"></script>  --}}
 
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnHV6QtGETar9olguruwVjjcDAFhrV-sg&callback=initMap&libraries=&v=weekly" defer></script>
 
         <script>
-        let map, infoWindow;
+            let map, infoWindow, marker, mylat, mylng;
+            let labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            let labelIndex = 0;
+            let directionsRenderer, directionsService;
+            function initMap() {
+                //----------------------------- Directions ------------------
+                directionsRenderer = new google.maps.DirectionsRenderer();
+                directionsService = new google.maps.DirectionsService();
+                //-------------------------------------------------------------
 
-        function initMap() {
-        map = new google.maps.Map(document.getElementById("map"), {
-            center: { lat: -34.397, lng: 150.644 },
-            zoom: 15
-        });
-        infoWindow = new google.maps.InfoWindow();
 
-        // Try HTML5 geolocation.
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-            position => {
-                const pos = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-                };
-                infoWindow.setPosition(pos);
-                infoWindow.setContent("Location found.");
-                infoWindow.open(map);
-                map.setCenter(pos);
-            },
-            () => {
-                handleLocationError(true, infoWindow, map.getCenter());
+                //------------------  MAPA --------------------------------------
+                //----------------------------------------------------------------
+                map = new google.maps.Map(document.getElementById("map"), {
+                    center: { lat: -34.397, lng: 150.644 },
+                    zoom: 14
+                });
+                infoWindow = new google.maps.InfoWindow();
+                directionsRenderer.setMap(map);
+                //----------------------MAPA-----------------------------------------
+
+
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    mylat = position.coords.latitude;
+                    mylng = position.coords.longitude;
+
+                    var geolocpoint = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    map.setCenter(geolocpoint);
+
+                    const contentString =
+                        '<strong>{{ Auth::user()->name }}</strong>';
+
+                    const infowindow = new google.maps.InfoWindow({
+                        content: contentString
+                    });
+
+                    //--------------------------MARK--------------------------------
+                    marker = new google.maps.Marker({
+                        map,
+                        //draggable: true,
+                        animation: google.maps.Animation.DROP,
+                        position: { lat: position.coords.latitude, lng: position.coords.longitude },
+                        label: labels[labelIndex++ % labels.length],
+                    });
+
+                    infowindow.open(map, marker);
+
+                    marker.addListener("click", function(){
+                        marker.setAnimation(google.maps.Animation.BOUNCE);
+                    });
+
+                    marker.addListener("click", () => {
+                        infowindow.open(map, marker);
+                    });
+                    //--------------------------MARK------------------------------------
+
+                   
+                    
+                }, function (e) {
+                    //Your error handling here
+                }, {
+                    enableHighAccuracy: true
+                });
+               
+
+
+
+                //----------------------- Buscador ---------------------------------
+                //-------------------------------------------------------------------
+                const styleControl = document.getElementById("style-selector-control");
+                map.controls[google.maps.ControlPosition.TOP_CENTER].push(styleControl);
+                document.getElementById("myboton").addEventListener("click", () => {
+                     map.setZoom(14);
+                    var busvar =  document.getElementById("mytext").value;
+                    var urli = '{{ route('medidor_first', ':code') }}';
+                    urli = urli.replace(':code', busvar);
+                    $.ajax({
+                        url: urli,
+                        success: function (response) {
+                            var marker = new google.maps.Marker({
+                                map,
+                                //draggable: true,
+                                animation: google.maps.Animation.DROP,
+                                position: { lat: parseFloat(response.y), lng: parseFloat(response.x) },
+                                label: labels[labelIndex++ % labels.length],
+                            });
+
+                            map.setCenter({ lat: parseFloat(response.y), lng: parseFloat(response.x) });
+                            map.setZoom(17);
+
+                            const contentString =   'Name: <strong>'+response.consumidor+'</strong> <br />' +
+                                                    'Codigo: <strong>'+response.codigo+'</strong> - Categoria: <strong>'+response.categoria+'</strong> <br />'+
+                                                    '<hr />'+
+                                                    '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.y)+', '+parseFloat(response.x)+')" id="'+response.codigo+'" class="btn btn-sm btn-primary">Crear Ruta</a>';
+                            
+                            //console.log(directionsRenderer);
+
+                            const infowindow = new google.maps.InfoWindow({
+                                content: contentString
+                            });
+
+                            infowindow.open(map, marker);
+
+                            marker.addListener("click", function(){
+                                marker.setAnimation(google.maps.Animation.BOUNCE);
+                            });
+
+                            marker.addListener("click", () => {
+                                infowindow.open(map, marker);
+                            });
+                        }
+                    });
+                });
+                //---------------------------------Buscador----------------------------------
+  
             }
-            );
-        } else {
-            // Browser doesn't support Geolocation
-            handleLocationError(false, infoWindow, map.getCenter());
-        }
-        }
 
-        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-        infoWindow.setPosition(pos);
-        infoWindow.setContent(
-            browserHasGeolocation
-            ? "Error: The Geolocation service failed."
-            : "Error: Your browser doesn't support geolocation."
-        );
-        infoWindow.open(map);
-        }
+            //----------------------- Buscador ---------------------------------
+            //------------------------------------------------------------------
+            function calculateAndDisplayRoute(lat, lng)
+            {
+                //console.log(mylat);
+                directionsService.route({
+                    origin: {lat: mylat, lng: mylng},
+                    destination: {lat: lat, lng: lng},
+                    travelMode: google.maps.TravelMode.DRIVING },
+                    (response, status) => {
+                    if (status === "OK") {
+                        directionsRenderer.setDirections(response);
+                    } else {
+                        window.alert("Directions request failed due to " + status);
+                    }
+                });
+            }
+            //------------------------------------------------------------------
+
+
+            function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+                infoWindow.setPosition(pos);
+                infoWindow.setContent(
+                    browserHasGeolocation
+                    ? "Error: The Geolocation service failed."
+                    : "Error: Your browser doesn't support geolocation."
+                );
+                infoWindow.open(map);
+            }
+
+
+
         </script>
     </body>
 </html>
