@@ -33,20 +33,6 @@ class SocialiteController extends Controller
                       $user->avatar = $auth_user->avatar;
                       $user->save();
   
-                      // Si existe el módulo HiStrean creamos la suscripción
-                      $module_histream = Module::find(2);
-                      if($module_histream){
-                          if ($module_histream->installed){
-                              PlanUser::create([
-                                  'hs_plan_id' => 1,
-                                  'user_id' => $user->id,
-                                  'status' => 1
-                              ]);
-                              session(['greetings_histream' => true]);
-                              // Enviar notificación de nueva suscripción al módulo hiStream
-                              event(new SuscriptionUser($user));
-                          }
-                      }
                       Auth::login($user, true);
                   }
                   return redirect('/home');

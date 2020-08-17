@@ -7,10 +7,8 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <title>{{ $page->name }}</title>
   <!-- Font Awesome -->
- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
   <link href="{{ asset('vendor/mdb/css/bootstrap.min.css') }}" rel="stylesheet">
-  <!-- Material Design Bootstrap -->
   <link href="{{ asset('vendor/mdb/css/mdb.min.css') }}" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('vendor/mdb/css/addons-pro/timeline.min.css') }}">
   <style>
@@ -88,14 +86,14 @@
           <div class="row smooth-scroll">
             <div class="col-md-12 text-center white-text">
               <div class="wow fadeInDown" data-wow-delay="0.2s">
-                <h3 class="display-4 font-weight-bold mb-2 rgba-black-light py-2">Event Agency</h3>
+                <h3 class="display-4 font-weight-bold mb-2 rgba-black-light py-2">Enrutador GIS</h3>
                 <hr class="hr-light my-4">
-                <h4 class="subtext-header mt-2 mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                  <p class="clearfix d-none d-md-inline-block">Deleniti onsequuntur, nihil voluptatem modi.</p>
+                <h4 class="subtext-header mt-2 mb-4">Softwate Inteligente para administratar y gestionar Redes Electricas con Datos Geograicos.
+                  {{--  <p class="clearfix d-none d-md-inline-block">Deleniti onsequuntur, nihil voluptatem modi.</p>  --}}
                 </h4>
               </div>
-              <a href="#about" data-offset="90" class="btn btn-rounded btn-pink wow fadeInUp" data-wow-delay="0.2s">
-                Visit us</a>
+              <a href="/home" data-offset="90" class="btn btn-rounded btn-pink wow fadeInUp" data-wow-delay="0.2s">
+                Ir al Panel</a>
               </a>
             </div>
           </div>
@@ -981,13 +979,10 @@
   </footer>
   <!--/Footer-->
 
-  <!--  JQuery  -->
+
   <script type="text/javascript" src="{{ asset('vendor/mdb/js/jquery-3.4.1.min.js') }}"></script>
-  <!--  Bootstrap tooltips  -->
-  <script type="text/javascript" src="{{ asset('vendor/mdb/popper.min.js') }}"></script>
-  <!--  Bootstrap core JavaScript  -->
-  <script type="text/javascript" src="{{ asset('vendor/mdb/bootstrap.min.js') }}"></script>
-  <!--  MDB core JavaScript  -->
+  <script type="text/javascript" src="{{ asset('vendor/mdb/js/popper.min.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('vendor/mdb/js/bootstrap.min.js') }}"></script>
   <script type="text/javascript" src="{{ asset('vendor/mdb/js/mdb.min.js') }}"></script>
 
   <!-- Custom scripts -->

@@ -30,6 +30,9 @@ Route::get('/buscador', function () {
     return view('pages.buscador');
 })->middleware('auth');
 
+Route::get('login/{social}', 'SocialiteController@redirectToProvider')->name('socialLogin');
+Route::get('login/{social}/callback', 'SocialiteController@handleProviderCallback');
+
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 
