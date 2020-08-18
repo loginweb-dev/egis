@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Panel</title>
+    <title>{{ setting('site.title') }}</title>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <link href="{{ asset('vendor/mdb/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -87,7 +87,7 @@
 
           <!-- Left -->
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
+            {{-- <li class="nav-item">
               <a class="nav-link waves-effect" href="https://mdbootstrap.com/docs/jquery/" target="_blank">jQuery</a>
             </li>
             <li class="nav-item">
@@ -98,7 +98,8 @@
             </li>
             <li class="nav-item">
               <a class="nav-link waves-effect" href="https://mdbootstrap.com/docs/vue/" target="_blank">Vue</a>
-            </li>
+            </li> --}}
+            {{ menu('LandingPage', 'menus.LandingPage') }}
           </ul>
  
           <!-- Right -->

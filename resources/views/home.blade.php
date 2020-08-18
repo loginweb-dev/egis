@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Panel</title>
+    <title>{{ setting('site.title') }}</title>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <link href="{{ asset('vendor/mdb/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -24,47 +23,47 @@
   <header>
     
     <style>
-     .navbar .navbar-brand img {
-      height: 20px;
-    }
-
-    .navbar .navbar-brand {
-      padding-top: 0;
-    }
-
-    .navbar .nav-link {
-      color: #444343!important;
-    }
-
-    .navbar .button-collapse {
-      padding-top: 1px;
-    }
-
-    .card-intro .card-body {
-      padding-top: 1.5rem;
-      padding-bottom: 1.5rem;
-      border-radius: 0 !important;
-    }
-
-    .card-intro .card-body h1 {
-      margin-bottom: 0;
-    }
-
-    .card-intro {
-      margin-top: 64px;
-    }
-
-    @media (max-width: 450px) {
-      .card-intro {
-        margin-top: 56px;
+      .navbar .navbar-brand img {
+        height: 20px;
       }
-    }
 
-    @media (min-width: 1441px) {
-      .card-intro {
-        padding-left: 0 !important;
+      .navbar .navbar-brand {
+        padding-top: 0;
       }
-    }
+
+      .navbar .nav-link {
+        color: #444343!important;
+      }
+
+      .navbar .button-collapse {
+        padding-top: 1px;
+      }
+
+      .card-intro .card-body {
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-radius: 0 !important;
+      }
+
+      .card-intro .card-body h1 {
+        margin-bottom: 0;
+      }
+
+      .card-intro {
+        margin-top: 64px;
+      }
+
+      @media (max-width: 450px) {
+        .card-intro {
+          margin-top: 56px;
+        }
+      }
+
+      @media (min-width: 1441px) {
+        .card-intro {
+          padding-left: 0 !important;
+        }
+      }
     </style>
 
     <!-- Navbar -->
@@ -87,7 +86,7 @@
 
           <!-- Left -->
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
+            {{-- <li class="nav-item">
               <a class="nav-link waves-effect" href="https://mdbootstrap.com/docs/jquery/" target="_blank">jQuery</a>
             </li>
             <li class="nav-item">
@@ -98,12 +97,13 @@
             </li>
             <li class="nav-item">
               <a class="nav-link waves-effect" href="https://mdbootstrap.com/docs/vue/" target="_blank">Vue</a>
-            </li>
+            </li> --}}
+            {{ menu('LandingPage', 'menus.LandingPage') }}
           </ul>
  
           <!-- Right -->
           <ul class="navbar-nav nav-flex-icons">
-            <li class="nav-item">
+            {{-- <li class="nav-item">
               <a href="https://www.facebook.com/mdbootstrap" class="nav-link waves-effect" target="_blank">
                 <i class="fab fa-facebook-f"></i>
               </a>
@@ -124,7 +124,44 @@
                 class="nav-link border border-light rounded waves-effect mr-2" target="_blank">
                 <i class="fas fa-envelope mr-1"></i>Newsletter
               </a>
-            </li>
+            </li> --}}
+            @guest
+              <li class="nav-item">
+                  <a class="nav-link" href="{{ route('login') }}">
+                    Ingresar
+                  </a>
+              </li>
+              @if (Route::has('register'))
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ route('register') }}">
+                        Registrarme
+                      </a>
+                  </li>
+              @endif
+            @else
+                <li class="nav-item dropdown">
+                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        {{ Auth::user()->name }} <span class="caret"></span>
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+
+                      <a class="dropdown-item" href="/home">
+                            Perfil
+                      </a>
+
+                      <a class="dropdown-item" href="{{ route('logout') }}"
+                          onclick="event.preventDefault();
+                                        document.getElementById('logout-form').submit();">
+                          Salir
+                      </a>
+
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </div>
+                </li>
+            @endguest 
           </ul>
 
         </div>

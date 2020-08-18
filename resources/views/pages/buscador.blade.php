@@ -4,12 +4,11 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Panel</title>
-        <!-- Font Awesome -->
+
+        <title>{{ setting('site.title') }}</title>
+        
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-        <!-- Bootstrap core CSS -->
         <link href="{{ asset('vendor/mdb/css/bootstrap.min.css') }}" rel="stylesheet">
-        <!-- Material Design Bootstrap -->
         <link href="{{ asset('vendor/mdb/css/mdb.min.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="{{ asset('vendor/mdb/css/addons-pro/timeline.min.css') }}">
         <style type="text/css">
@@ -22,7 +21,6 @@
             margin: 0;
             padding: 0;
         }
-
         </style>
         @laravelPWA
     </head>
@@ -125,20 +123,27 @@
                 const styleControl = document.getElementById("style-selector-control");
                 map.controls[google.maps.ControlPosition.TOP_CENTER].push(styleControl);
                 document.getElementById("myboton").addEventListener("click", () => {
-                     map.setZoom(14);
+                    map.setZoom(14);
                     var busvar =  document.getElementById("mytext").value;
                     var urli = '{{ route('medidor_first', ':code') }}';
                     urli = urli.replace(':code', busvar);
                     $.ajax({
                         url: urli,
                         success: function (response) {
-                            var marker = new google.maps.Marker({
+                            if(response)
+                            {
+                                console.log(response);
+                                var marker = new google.maps.Marker({
                                 map,
                                 //draggable: true,
                                 animation: google.maps.Animation.DROP,
                                 position: { lat: parseFloat(response.y), lng: parseFloat(response.x) },
                                 label: labels[labelIndex++ % labels.length],
                             });
+                            }else{
+                                console.log(response);
+                            }
+                          
 
                             map.setCenter({ lat: parseFloat(response.y), lng: parseFloat(response.x) });
                             map.setZoom(17);
