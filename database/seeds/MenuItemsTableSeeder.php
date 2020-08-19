@@ -198,7 +198,7 @@ class MenuItemsTableSeeder extends Seeder
         $menuItem = MenuItem::firstOrNew([
             'menu_id' => $menu->id,
             'title'   => 'Politicas y Privacidad',
-            'url'     => '/politica-privacidad',
+            'url'     => '/page/policies',
             'route'   => null,
         ]);
         if (!$menuItem->exists) {
@@ -213,7 +213,7 @@ class MenuItemsTableSeeder extends Seeder
         $menuItem = MenuItem::firstOrNew([
             'menu_id' => $menu->id,
             'title'   => 'Terminos y Condiciones',
-            'url'     => '/terminos-condiones',
+            'url'     => '/page/terms',
             'route'   => null,
         ]);
         if (!$menuItem->exists) {
