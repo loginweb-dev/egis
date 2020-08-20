@@ -65,8 +65,6 @@
         }
       }
     </style>
-
-    <!-- Navbar -->
     <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
       <div class="container">
 
@@ -83,48 +81,10 @@
 
         <!-- Links -->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-          <!-- Left -->
           <ul class="navbar-nav mr-auto">
-            {{-- <li class="nav-item">
-              <a class="nav-link waves-effect" href="https://mdbootstrap.com/docs/jquery/" target="_blank">jQuery</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link waves-effect" href="https://mdbootstrap.com/docs/angular/" target="_blank">Angular</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link waves-effect" href="https://mdbootstrap.com/docs/react/" target="_blank">React</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link waves-effect" href="https://mdbootstrap.com/docs/vue/" target="_blank">Vue</a>
-            </li> --}}
             {{ menu('LandingPage', 'menus.LandingPage') }}
           </ul>
- 
-          <!-- Right -->
           <ul class="navbar-nav nav-flex-icons">
-            {{-- <li class="nav-item">
-              <a href="https://www.facebook.com/mdbootstrap" class="nav-link waves-effect" target="_blank">
-                <i class="fab fa-facebook-f"></i>
-              </a>
-            </li> 
-            <li class="nav-item">
-              <a href="https://twitter.com/MDBootstrap" class="nav-link waves-effect" target="_blank">
-                <i class="fab fa-twitter"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="https://github.com/mdbootstrap/bootstrap-material-design" class="nav-link waves-effect"
-                target="_blank">
-                <i class="fab fa-github"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="https://mdbootstrap.com/docs/jquery/newsletter/"
-                class="nav-link border border-light rounded waves-effect mr-2" target="_blank">
-                <i class="fas fa-envelope mr-1"></i>Newsletter
-              </a>
-            </li> --}}
             @guest
               <li class="nav-item">
                   <a class="nav-link" href="{{ route('login') }}">
@@ -143,19 +103,15 @@
                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                         {{ Auth::user()->name }} <span class="caret"></span>
                     </a>
-
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-
                       <a class="dropdown-item" href="/home">
                             Perfil
                       </a>
-
                       <a class="dropdown-item" href="{{ route('logout') }}"
                           onclick="event.preventDefault();
                                         document.getElementById('logout-form').submit();">
                           Salir
                       </a>
-
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>
@@ -168,9 +124,6 @@
 
       </div>
     </nav>
-    <!-- Navbar -->
-
-    <!-- Intro -->
     <div class="card card-intro blue-gradient m-4">
 
       <div class="card-body white-text rgba-black-light text-center">
@@ -196,7 +149,6 @@
       </div>
 
     </div>
-    <!-- Intro -->
 
   </header>
   <!-- Navigation -->

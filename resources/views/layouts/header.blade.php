@@ -11,43 +11,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
           <ul class="navbar-nav mr-auto smooth-scroll">
-            {{-- <li class="nav-item">
-              <a class="nav-link" href="#home">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#features" data-offset="80">Features</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#events" data-offset="80">Events</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#tickets" data-offset="40">Tickets</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#faq" data-offset="40">Faq</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#contact" data-offset="80">Contact</a>
-            </li> --}}
             {{ menu('LandingPage', 'menus.LandingPage') }}
           </ul>
           <!-- Social Icon  -->
           <ul class="navbar-nav nav-flex-icons">
-            {{-- <li class="nav-item">
-              <a class="nav-link">
-                <i class="fab fa-facebook-f"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link">
-                <i class="fab fa-twitter"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link">
-                <i class="fab fa-instagram"></i>
-              </a>
-            </li> --}}
             @guest
               <li class="nav-item">
                   <a class="nav-link" href="{{ route('login') }}">
@@ -99,7 +66,7 @@
               <div class="wow fadeInDown" data-wow-delay="0.2s">
                 <h3 class="display-4 font-weight-bold mb-2 rgba-black-light py-2">Enrutador GIS</h3>
                 <hr class="hr-light my-4">
-                <h4 class="subtext-header mt-2 mb-4">Softwate Inteligente para administratar y gestionar Redes Electricas con Datos Geograicos.
+                <h4 class="subtext-header mt-2 mb-4">Softwate Inteligente para administratar y gestionar Redes Electricas con Datos Geograficos.
                   {{--  <p class="clearfix d-none d-md-inline-block">Deleniti onsequuntur, nihil voluptatem modi.</p>  --}}
                 </h4>
               </div>

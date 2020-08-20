@@ -49,7 +49,7 @@
 
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnHV6QtGETar9olguruwVjjcDAFhrV-sg&callback=initMap&libraries=&v=weekly" defer></script>
-
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
         <script>
             let map, infoWindow, marker, mylat, mylng;
             let labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -125,49 +125,75 @@
                 document.getElementById("myboton").addEventListener("click", () => {
                     map.setZoom(14);
                     var busvar =  document.getElementById("mytext").value;
-                    var urli = '{{ route('medidor_first', ':code') }}';
+                    var urli = '{{ route('search_first', ':code') }}';
                     urli = urli.replace(':code', busvar);
                     $.ajax({
                         url: urli,
                         success: function (response) {
-                            if(response)
+                            if(response.error)
                             {
+                                console.log(response);
+                                message('error', response.error);
+                                
+                            }else{
                                 console.log(response);
                                 var marker = new google.maps.Marker({
                                 map,
                                 //draggable: true,
                                 animation: google.maps.Animation.DROP,
-                                position: { lat: parseFloat(response.y), lng: parseFloat(response.x) },
+                                position: { lat: parseFloat(response.find.y), lng: parseFloat(response.find.x) },
                                 label: labels[labelIndex++ % labels.length],
-                            });
-                            }else{
-                                console.log(response);
-                            }
-                          
+                                });
+                                                          
 
-                            map.setCenter({ lat: parseFloat(response.y), lng: parseFloat(response.x) });
-                            map.setZoom(17);
+                                map.setCenter({ lat: parseFloat(response.find.y), lng: parseFloat(response.find.x) });
+                                map.setZoom(17);
+                                var contentString;
+                                switch (response.table) {
+                                    case 'Medidores':
+                                        contentString = 'Name: <strong>'+response.find.consumidor+'</strong> <br />' +
+                                                        'Direccion: <strong>'+response.find.direccion+'</strong> <br />' +
+                                                        'Codigo: <strong>'+response.find.codigo+'</strong> - Categoria: <strong>'+response.find.categoria+'</strong> - Trafo: <strong>'+response.find.cod_centro+'</strong>'+
+                                                        '<hr />'+
+                                                        '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-sm btn-primary">Crear Ruta</a>';
 
-                            const contentString =   'Name: <strong>'+response.consumidor+'</strong> <br />' +
-                                                    'Codigo: <strong>'+response.codigo+'</strong> - Categoria: <strong>'+response.categoria+'</strong> <br />'+
-                                                    '<hr />'+
-                                                    '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.y)+', '+parseFloat(response.x)+')" id="'+response.codigo+'" class="btn btn-sm btn-primary">Crear Ruta</a>';
-                            
-                            //console.log(directionsRenderer);
+                                        message('info', 'Busqueda encontrada en: '+response.table);
+                                        break;
+                                    case 'Transformadores':
+                                            contentString = 'Codigo: <strong>'+response.find.codigo+'</strong> <br />'+
+                                                            'Direccion: <strong>'+response.find.direccion+'</strong> <br />'+
+                                                            '<hr />'+
+                                                            '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-sm btn-primary">Crear Ruta</a>';
+                                                            
+                                            message('info', 'Busqueda encontrada en: '+response.table);
+                                        break;
+                                    case 'Protecciones':
+                                        contentString = 'Codigo: <strong>'+response.find.codigo+'</strong> <br />'+
+                                                        'Codigo Superior: <strong>'+response.find.cod_superi+'</strong> <br />'+
+                                                        '<hr />'+
+                                                        '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-sm btn-primary">Crear Ruta</a>';
+                                                        
+                                        message('info', 'Busqueda encontrada en: '+response.table);
+                                    break;
+                                    default:
+                                        break;
+                                }
 
-                            const infowindow = new google.maps.InfoWindow({
-                                content: contentString
-                            });
-
-                            infowindow.open(map, marker);
-
-                            marker.addListener("click", function(){
-                                marker.setAnimation(google.maps.Animation.BOUNCE);
-                            });
-
-                            marker.addListener("click", () => {
+                                const infowindow = new google.maps.InfoWindow({
+                                    content: contentString
+                                });
+                                
                                 infowindow.open(map, marker);
-                            });
+
+                                marker.addListener("click", function(){
+                                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                                });
+
+                                marker.addListener("click", () => {
+                                    infowindow.open(map, marker);
+                                });
+                            }
+                            
                         }
                     });
                 });
@@ -179,7 +205,7 @@
             //------------------------------------------------------------------
             function calculateAndDisplayRoute(lat, lng)
             {
-                //console.log(mylat);
+                message('info', 'Ruta creada para: '+lat+' '+lng);
                 directionsService.route({
                     origin: {lat: mylat, lng: mylng},
                     destination: {lat: lat, lng: lng},
@@ -205,7 +231,25 @@
                 infoWindow.open(map);
             }
 
-
+            //---------------------------------Mensajes -------
+            function message(type, message)
+            {
+                const Toast = Swal.mixin({
+                toast: true,
+                position: 'bottom-end',
+                showConfirmButton: false,
+                timer: 5000,
+                timerProgressBar: true,
+                onOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+                });
+                Toast.fire({
+                icon: type,
+                title: message
+                });
+            }
 
         </script>
     </body>

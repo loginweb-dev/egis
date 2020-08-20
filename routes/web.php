@@ -53,7 +53,7 @@ Route::group(['prefix' => 'admin'], function () {
 
 
     //-------- AJAX-----------------------------------------------------------
-    Route::get('/medidor/{code}', 'MedidoreController@medidor_first')->name('medidor_first'); 
+    Route::get('/search/{code}', 'SearchController@search_first')->name('search_first'); 
 
 });
 
