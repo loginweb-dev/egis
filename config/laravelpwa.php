@@ -1,10 +1,10 @@
 <?php
 
 return [
-    'name' => 'LaravelPWA',
+    'name' => 'EnrutadorGIS v3.0',
     'manifest' => [
-        'name' => env('APP_NAME', 'My PWA App'),
-        'short_name' => 'PWA',
+        'name' => env('APP_NAME', 'EnrutadorGIS v3.0'),
+        'short_name' => 'EGIS',
         'start_url' => '/',
         'background_color' => '#ffffff',
         'theme_color' => '#000000',

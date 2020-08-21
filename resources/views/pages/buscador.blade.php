@@ -155,7 +155,8 @@
                                                         'Direccion: <strong>'+response.find.direccion+'</strong> <br />' +
                                                         'Codigo: <strong>'+response.find.codigo+'</strong> - Categoria: <strong>'+response.find.categoria+'</strong> - Trafo: <strong>'+response.find.cod_centro+'</strong>'+
                                                         '<hr />'+
-                                                        '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-sm btn-primary">Crear Ruta</a>';
+                                                        '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-sm btn-primary">Crear Ruta</a>'+
+                                                        '<a href="#" onclick=""></a>';
 
                                         message('info', 'Busqueda encontrada en: '+response.table);
                                         break;

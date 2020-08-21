@@ -176,8 +176,7 @@
         <div class="mx-4">
           <h4 class="font-weight-bold mb-3">Buscador</h4>
           {{-- <h6 class="font-weight-bold grey-text mb-3">Web Designer</h6> --}}
-          <p class="grey-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod eos id officiis hic
-            tenetur.</p>
+          <p class="grey-text">Modulo Buscador, aqui podras buscar y enrutar a todos los elmentos electricos que interactuan en la topologia de RED</p>
           
           {{-- <a class="p-2 fa-lg fb-ic">
             <i class="fab fa-facebook-f"> </i>
