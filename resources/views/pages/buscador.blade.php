@@ -21,22 +21,30 @@
             margin: 0;
             padding: 0;
         }
+        #overview {
+            position: absolute;
+            left: 5px;
+            height: 100px;
+            width: 100px;
+            bottom: 5px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
         </style>
         @laravelPWA
     </head>
     <body>
         
-        <div id="style-selector-control" class="map-control">
+        <div id="style-selector-control" class="pt-4">
             <div class="md-form input-group">
                 <input id="mytext" type="text" class="form-control" placeholder="Ingresa tu Busqueda" aria-label="Ingresa tu Busqueda" aria-describedby="MaterialButton-addon2">
                 <div class="input-group-append">
                     <button class="btn btn-md btn-primary" type="button" id="myboton">Buscar</button>
                 </div>
-                <hr />
-                <div id="right-panel"></div>
             </div>
         </div>
+
         <div id="map"></div>
+        <div id="overview"></div>
 
         <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -80,10 +88,13 @@
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnHV6QtGETar9olguruwVjjcDAFhrV-sg&callback=initMap&libraries=&v=weekly" defer></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
         <script>
-            let map, infoWindow, marker, mylat, mylng;
+            let map, infoWindow, marker, mylat, mylng, overview;
             let labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             let labelIndex = 0;
             let directionsRenderer, directionsService;
+            const OVERVIEW_DIFFERENCE = 5;
+            const OVERVIEW_MIN_ZOOM = 3;
+            const OVERVIEW_MAX_ZOOM = 12;
             function initMap() {
                 //----------------------------- Directions ------------------
                 directionsRenderer = new google.maps.DirectionsRenderer();
@@ -99,6 +110,28 @@
                 });
                 infoWindow = new google.maps.InfoWindow();
                 directionsRenderer.setMap(map);
+
+                overview = new google.maps.Map(document.getElementById("overview"), {
+                    center: { lat: -34.397, lng: 150.644 },
+                    zoom: 14,
+                    disableDefaultUI: true,
+                    gestureHandling: "none",
+                    zoomControl: false
+                });
+                
+                function clamp(num, min, max) {
+                    return Math.min(Math.max(num, min), max);
+                }
+                map.addListener("bounds_changed", () => {
+                    overview.setCenter(map.getCenter());
+                    overview.setZoom(
+                    clamp(
+                        map.getZoom() - OVERVIEW_DIFFERENCE,
+                        OVERVIEW_MIN_ZOOM,
+                        OVERVIEW_MAX_ZOOM
+                    )
+                    );
+                });
                 //----------------------MAPA-----------------------------------------
 
 
@@ -117,19 +150,33 @@
                     });
 
                     //--------------------------MARK--------------------------------
+                    var image = {
+                        url: "{{ Voyager::Image(Auth::user()->avatar) }}", // url
+                        scaledSize: new google.maps.Size(40, 40), // scaled size
+                        origin: new google.maps.Point(0,0), // origin
+                        anchor: new google.maps.Point(0, 0) // anchor
+                    };
                     marker = new google.maps.Marker({
                         map,
-                        //draggable: true,
+                        draggable: true,
+                        icon: image,
                         animation: google.maps.Animation.DROP,
                         position: { lat: position.coords.latitude, lng: position.coords.longitude },
                         label: labels[labelIndex++ % labels.length],
                     });
+
+                    google.maps.event.addListener(marker, "dragend", function(event) { 
+                        mylat = event.latLng.lat(); 
+                        mylng = event.latLng.lng(); 
+                    }); 
 
                     infowindow.open(map, marker);
 
                     marker.addListener("click", function(){
                         marker.setAnimation(google.maps.Animation.BOUNCE);
                     });
+
+                    setTimeout(function () { infowindow.close(); }, 9000);
 
                     marker.addListener("click", () => {
                         infowindow.open(map, marker);
@@ -152,6 +199,7 @@
                 const styleControl = document.getElementById("style-selector-control");
                 global_search=null;
                 map.controls[google.maps.ControlPosition.TOP_CENTER].push(styleControl);
+                global_infowindow=null;
                 document.getElementById("myboton").addEventListener("click", () => {
                     map.setZoom(14);
                     var busvar =  document.getElementById("mytext").value;
@@ -163,11 +211,9 @@
                         success: function (response) {
                             if(response.error)
                             {
-                                // console.log(response);
                                 message('error', response.error);
                                 
                             }else{
-                                console.log(response);
                                 var marker = new google.maps.Marker({
                                 map,
                                 //draggable: true,
@@ -186,8 +232,8 @@
                                                         'Direccion: <strong>'+response.find.direccion+'</strong> <br />' +
                                                         'Codigo: <strong>'+response.find.codigo+'</strong> - Categoria: <strong>'+response.find.categoria+'</strong> - Trafo: <strong>'+response.find.cod_centro+'</strong>'+
                                                         '<hr />'+
-                                                        '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-sm btn-primary">Crear Ruta</a>'+
-                                                        '<a href="#" data-toggle="modal" data-target="#modalLoginForm" class="btn btn-sm btn-success">Quieres Observar ?</a>';
+                                                        '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-sm btn-primary">Ruta?</a>'+
+                                                        '<a href="#" data-toggle="modal" data-target="#modalLoginForm" class="btn btn-sm btn-success">Observar?</a>';
                                         global_search=response.search;
                                         message('info', response.search +' - encontrado en '+response.table);
                                         break;
@@ -195,8 +241,8 @@
                                             contentString = 'Codigo: <strong>'+response.find.codigo+'</strong> <br />'+
                                                             'Direccion: <strong>'+response.find.direccion+'</strong> <br />'+
                                                             '<hr />'+
-                                                            '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-sm btn-primary">Crear Ruta</a>'+
-                                                            '<a href="#" data-toggle="modal" data-target="#modalLoginForm" class="btn btn-sm btn-success">Quieres Observar ?</a>';
+                                                            '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-md btn-primary">Ruta?</a>'+
+                                                            '<a href="#" data-toggle="modal" data-target="#modalLoginForm" class="btn btn-md btn-success">Observar?</a>';
                                                             
                                             global_search=response.search;
                                             message('info', response.search +' - encontrado en '+response.table);
@@ -205,8 +251,8 @@
                                         contentString = 'Codigo: <strong>'+response.find.codigo+'</strong> <br />'+
                                                         'Codigo Superior: <strong>'+response.find.cod_superi+'</strong> <br />'+
                                                         '<hr />'+
-                                                        '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-sm btn-primary">Crear Ruta</a>'+
-                                                        '<a href="#" data-toggle="modal" data-target="#modalLoginForm" class="btn btn-sm btn-success">Quieres Observar ?</a>';
+                                                        '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-sm btn-primary">Ruta?</a>'+
+                                                        '<a href="#" data-toggle="modal" data-target="#modalLoginForm" class="btn btn-sm btn-success">Observar?</a>';
                                                         
                                         global_search=response.search;
                                         message('info', response.search +' - encontrado en '+response.table);
@@ -215,18 +261,20 @@
                                         break;
                                 }
 
-                                const infowindow = new google.maps.InfoWindow({
+                                global_infowindow = new google.maps.InfoWindow({
                                     content: contentString
                                 });
                                 
-                                infowindow.open(map, marker);
+                                global_infowindow.open(map, marker);
 
                                 marker.addListener("click", function(){
                                     marker.setAnimation(google.maps.Animation.BOUNCE);
                                 });
 
+                                setTimeout(function () { global_infowindow.close(); }, 9000);
+
                                 marker.addListener("click", () => {
-                                    infowindow.open(map, marker);
+                                    global_infowindow.open(map, marker);
                                 });
                             }
                             
@@ -242,7 +290,7 @@
             function calculateAndDisplayRoute(lat, lng)
             {
                 message('info', 'Ruta creada para: '+global_search);
-                
+                setTimeout(function () { global_infowindow.close(); }, 9000);
                 directionsService.route({
                     origin: {lat: mylat, lng: mylng},
                     destination: {lat: lat, lng: lng},

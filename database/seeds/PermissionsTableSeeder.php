@@ -36,6 +36,6 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('pages');
         Permission::generateFor('blocks');
 
-        Permission::generateFor('search');
+        Permission::generateFor('searchs');
     }
 }

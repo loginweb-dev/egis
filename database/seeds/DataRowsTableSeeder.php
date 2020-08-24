@@ -18,7 +18,7 @@ class DataRowsTableSeeder extends Seeder
         $PageDataType = DataType::where('slug', 'pages')->firstOrFail();
         $BlockDataType = DataType::where('slug', 'blocks')->firstOrFail();
 
-        $SearchDataType = DataType::where('slug', 'search')->firstOrFail();
+        $SearchDataType = DataType::where('slug', 'searchs')->firstOrFail();
 
         $dataRow = $this->dataRow($userDataType, 'id');
         if (!$dataRow->exists) {
@@ -858,7 +858,20 @@ class DataRowsTableSeeder extends Seeder
                 ]
             ])->save();
         }
-        
+        $dataRow = $this->dataRow($SearchDataType, 'user_id');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'Traking',
+                'display_name' => 'Traking',
+                'required'     => 1,
+                'browse'       => 1,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 0,
+                'order'        => $count++,
+            ])->save();
+        }
         $dataRow = $this->dataRow($SearchDataType, 'created_at');
         if (!$dataRow->exists) {
             $dataRow->fill([

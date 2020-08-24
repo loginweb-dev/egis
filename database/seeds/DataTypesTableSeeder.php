@@ -102,29 +102,29 @@ class DataTypesTableSeeder extends Seeder
          }
          //blocks ------------------------------------
 
-           // search ----------------------------------
-           $dataType = $this->dataType('slug', 'search');
-           if (!$dataType->exists) {
-               $dataType->fill([
-                   'name'                  => 'search',
-                   'display_name_singular' => 'Busqueda',
-                   'display_name_plural'   => 'Busquedas',
-                   'icon'                  => 'voyager-params',
-                   'model_name'            => 'App\\Search',
-                   'controller'            => 'App\\Http\\Controllers\\SearchController',
-                   'generate_permissions'  => 1,
-                   'description'           => null,
-                   'server_side'           => 1,
-                   'details'               => [
-                       'order_column'         => 'id',
-                       'order_display_column' => 'id',
-                       'order_direction'      => 'asc',
-                       'default_search_key'   => 'id',
-                       'scope'                => null
-                   ]
-               ])->save();
-           }
-           //blocks ------------------------------------
+        // search ----------------------------------
+        $dataType = $this->dataType('slug', 'searchs');
+        if (!$dataType->exists) {
+            $dataType->fill([
+                'name'                  => 'searchs',
+                'display_name_singular' => 'Busqueda',
+                'display_name_plural'   => 'Busquedas',
+                'icon'                  => 'voyager-params',
+                'model_name'            => 'App\\Search',
+                'controller'            => 'App\\Http\\Controllers\\SearchController',
+                'generate_permissions'  => 1,
+                'description'           => null,
+                'server_side'           => 1,
+                'details'               => [
+                    'order_column'         => 'id',
+                    'order_display_column' => 'id',
+                    'order_direction'      => 'asc',
+                    'default_search_key'   => 'id',
+                    'scope'                => null
+                ]
+            ])->save();
+        }
+        //search ------------------------------------
     }
 
     /**

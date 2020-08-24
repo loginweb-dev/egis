@@ -19,7 +19,7 @@ use Validator;
 
 class SearchController extends Controller   
 {
-    public $table = 'search';
+    public $table = 'searchs';
     public $dataType;
     public $dataRowsAdd;
     public $dataRowsEdit;
@@ -240,7 +240,7 @@ class SearchController extends Controller
     }
 
     public function main_image(Request $request){
-        $product = BgProduct::find($request->id);
+        $product = Search::find($request->id);
         $new_order = [];
         array_push($new_order, $request->image);
         foreach (json_decode($product->images) as $image) {

@@ -13,7 +13,7 @@ class CreateSearchesTable extends Migration
      */
     public function up()
     {
-        Schema::create('searches', function (Blueprint $table) {
+        Schema::create('searchs', function (Blueprint $table) {
             $table->id();
             $table->string('type')->nullable();
             $table->string('search')->nullable();

@@ -247,14 +247,14 @@ class MenuItemsTableSeeder extends Seeder
         // crud -----------
           //-------------------------------------------------
         Menu::firstOrCreate([
-        'name' => 'search',
+        'name' => 'searchs',
         ]);
             $menu = Menu::where('name', 'search')->firstOrFail();
             $count=1;
             $menuItem = MenuItem::firstOrNew([
                 'menu_id' => $menu->id,
                 'title'   => 'Listar Search',
-                'url'     => 'admin/search/1',
+                'url'     => 'admin/searchss/1',
                 'route'   => null
             ]);
             if (!$menuItem->exists) {
