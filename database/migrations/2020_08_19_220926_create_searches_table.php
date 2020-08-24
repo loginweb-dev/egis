@@ -15,8 +15,11 @@ class CreateSearchesTable extends Migration
     {
         Schema::create('searches', function (Blueprint $table) {
             $table->id();
-            $table->string('criterio');
-            
+            $table->string('type')->nullable();
+            $table->string('search')->nullable();
+            $table->text('message')->nullable();
+            $table->string('x')->nullable();
+            $table->string('y')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
 

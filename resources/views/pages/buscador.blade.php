@@ -38,12 +38,41 @@
         </div>
         <div id="map"></div>
 
-          <!--  JQuery  -->
-  <script type="text/javascript" src="{{ asset('vendor/mdb/js/jquery-3.4.1.min.js') }}"></script>
+        <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header text-center">
+                    
+                    <h5 class="modal-title w-100 font-weight-bold">Envia tu Observacion, Al area Tecnica (GIS)</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                        <form id="myform" class="form" action="{{ route('save_obervation') }}" method="post">
+                            {{ csrf_field() }}  
+                            <div class="form-group">
+                                <label for="">Busqueda</label>
+                                <input type="text" name="search" id="search" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Mensaje</label>    
+                                <textarea name="message" id="message" placeholder="Write something to us" class="form-control"> </textarea>
+                            </div>
+                            <input type="text" name="x" id="x" class="form-control" hidden>
+                            <input type="text" name="y" id="y" class="form-control" hidden>
+                            <button type="submit" class="btn btn-primary">Enviar</button>
+                        </form>
+                </div>
+            </div>
+        </div>
+
+          <!--  JQuery  --> 
   <!--  Bootstrap tooltips  -->
+    <script type="text/javascript" src="{{ asset('vendor/mdb/js/jquery-3.4.1.min.js') }}"></script>
   {{--  <script type="text/javascript" src="{{ asset('vendor/mdb/popper.min.js') }}"></script>  --}}
   <!--  Bootstrap core JavaScript  -->
-  {{--  <script type="text/javascript" src="{{ asset('vendor/mdb/bootstrap.min.js') }}"></script>  --}}
+    <script type="text/javascript" src="{{ asset('vendor/mdb/js/bootstrap.min.js') }}"></script> 
   <!--  MDB core JavaScript  -->
   {{--  <script type="text/javascript" src="{{ asset('vendor/mdb/js/mdb.min.js') }}"></script>  --}}
 
@@ -121,18 +150,20 @@
                 //----------------------- Buscador ---------------------------------
                 //-------------------------------------------------------------------
                 const styleControl = document.getElementById("style-selector-control");
+                global_search=null;
                 map.controls[google.maps.ControlPosition.TOP_CENTER].push(styleControl);
                 document.getElementById("myboton").addEventListener("click", () => {
                     map.setZoom(14);
                     var busvar =  document.getElementById("mytext").value;
                     var urli = '{{ route('search_first', ':code') }}';
                     urli = urli.replace(':code', busvar);
+                    console.log(urli);
                     $.ajax({
                         url: urli,
                         success: function (response) {
                             if(response.error)
                             {
-                                console.log(response);
+                                // console.log(response);
                                 message('error', response.error);
                                 
                             }else{
@@ -156,25 +187,29 @@
                                                         'Codigo: <strong>'+response.find.codigo+'</strong> - Categoria: <strong>'+response.find.categoria+'</strong> - Trafo: <strong>'+response.find.cod_centro+'</strong>'+
                                                         '<hr />'+
                                                         '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-sm btn-primary">Crear Ruta</a>'+
-                                                        '<a href="#" onclick=""></a>';
-
-                                        message('info', 'Busqueda encontrada en: '+response.table);
+                                                        '<a href="#" data-toggle="modal" data-target="#modalLoginForm" class="btn btn-sm btn-success">Quieres Observar ?</a>';
+                                        global_search=response.search;
+                                        message('info', response.search +' - encontrado en '+response.table);
                                         break;
                                     case 'Transformadores':
                                             contentString = 'Codigo: <strong>'+response.find.codigo+'</strong> <br />'+
                                                             'Direccion: <strong>'+response.find.direccion+'</strong> <br />'+
                                                             '<hr />'+
-                                                            '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-sm btn-primary">Crear Ruta</a>';
+                                                            '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-sm btn-primary">Crear Ruta</a>'+
+                                                            '<a href="#" data-toggle="modal" data-target="#modalLoginForm" class="btn btn-sm btn-success">Quieres Observar ?</a>';
                                                             
-                                            message('info', 'Busqueda encontrada en: '+response.table);
+                                            global_search=response.search;
+                                            message('info', response.search +' - encontrado en '+response.table);
                                         break;
                                     case 'Protecciones':
                                         contentString = 'Codigo: <strong>'+response.find.codigo+'</strong> <br />'+
                                                         'Codigo Superior: <strong>'+response.find.cod_superi+'</strong> <br />'+
                                                         '<hr />'+
-                                                        '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-sm btn-primary">Crear Ruta</a>';
+                                                        '<a href="#" onclick="calculateAndDisplayRoute('+parseFloat(response.find.y)+', '+parseFloat(response.find.x)+')" id="'+response.find.codigo+'" class="btn btn-sm btn-primary">Crear Ruta</a>'+
+                                                        '<a href="#" data-toggle="modal" data-target="#modalLoginForm" class="btn btn-sm btn-success">Quieres Observar ?</a>';
                                                         
-                                        message('info', 'Busqueda encontrada en: '+response.table);
+                                        global_search=response.search;
+                                        message('info', response.search +' - encontrado en '+response.table);
                                     break;
                                     default:
                                         break;
@@ -202,11 +237,12 @@
   
             }
 
-            //----------------------- Buscador ---------------------------------
+            //----------------------- enrutador ---------------------------------
             //------------------------------------------------------------------
             function calculateAndDisplayRoute(lat, lng)
             {
-                message('info', 'Ruta creada para: '+lat+' '+lng);
+                message('info', 'Ruta creada para: '+global_search);
+                
                 directionsService.route({
                     origin: {lat: mylat, lng: mylng},
                     destination: {lat: lat, lng: lng},
@@ -239,7 +275,7 @@
                 toast: true,
                 position: 'bottom-end',
                 showConfirmButton: false,
-                timer: 5000,
+                timer: 9000,
                 timerProgressBar: true,
                 onOpen: (toast) => {
                     toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -252,6 +288,35 @@
                 });
             }
 
+            $("#modalLoginForm").on('show.bs.modal', function(){
+                console.log(global_search);
+                $('#search').val(global_search);
+                $('#x').val(mylat);
+                $('#y').val(mylng);
+                // message('info', '');
+            });
+            $("#myform").submit(function(e) {
+
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+                var form = $(this);
+                var url = form.attr('action');
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(response)
+                    {
+                        console.log(response);
+                        message('info', 'Mensaje Enviado #'+response.data.id);
+                        $('#modalLoginForm').modal('hide');
+
+                    }, error: function(e){
+                        console.log(e);
+                    }
+                    });
+                });
+
+                
         </script>
     </body>
 </html>

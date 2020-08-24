@@ -9,5 +9,5 @@ class Search extends Model
     use SoftDeletes;
     protected $dates = ['deleted_at'];
     protected $table = 'searches';
-    protected $fillable = ['criterio', 'user_id'];
+    protected $fillable = ['search', 'user_id', 'type', 'message', 'x', 'y'];
 }

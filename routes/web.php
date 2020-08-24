@@ -31,6 +31,10 @@ Route::get('/buscador', function () {
     return view('pages.buscador');
 })->middleware('auth');
 
+// Route::post('/observation', function () {
+//     return view('pages.buscador');
+// })->middleware('auth');
+
 Route::get('login/{social}', 'SocialiteController@redirectToProvider')->name('socialLogin');
 Route::get('login/{social}/callback', 'SocialiteController@handleProviderCallback');
 
@@ -53,7 +57,17 @@ Route::group(['prefix' => 'admin'], function () {
 
 
     //-------- AJAX-----------------------------------------------------------
-    Route::get('/search/{code}', 'SearchController@search_first')->name('search_first'); 
+    Route::get('/ajax_search/{code}', 'SearchController@search_first')->name('search_first'); 
+    Route::post('/ajax_save_obervation', 'SearchController@save_obervation')->name('save_obervation'); 
+
+
+    Route::post('bimgo/search', 'BimgoController@search')->name('bg_search');
+    Route::get('bimgo/relationship/{id}/{table}/{key}/{type}', 'BimgoController@relationship')->name('bg_relationship');
+    Route::get('bimgo/view/{table}/{id}', 'BimgoController@view')->name('bg_view');
+    Route::get('bimgo/deletes/recovery/{table}/{id}', 'BimgoController@recovery')->name('bg_recovery');
+    Route::get('bimgo/deletes/{table}', 'BimgoController@deletes')->name('bg_deletes');
+
+    Route::post('bimgo/update_image', 'ProductController@main_image')->name('update_image');    
 
 });
 

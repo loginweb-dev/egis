@@ -95,7 +95,36 @@ class MenuItemsTableSeeder extends Seeder
             ])->save();
         }
 
-
+        $adminMenuItem = MenuItem::firstOrNew([
+            'menu_id' => $menu->id,
+            'title'   => 'Administrador',
+            'url'     => '',
+        ]);
+        if (!$adminMenuItem->exists) {
+            $adminMenuItem->fill([
+                'target'     => '_self',
+                'icon_class' => 'voyager-tools',
+                'color'      => null,
+                'parent_id'  => null,
+                'order'      => 2,
+            ])->save();
+        }
+            $count = 1;
+            $menuItem = MenuItem::firstOrNew([
+                'menu_id' => $menu->id,
+                'title'   => 'Busquedas',
+                'url'     => '',
+                'route'   => 'voyager.search.index',
+            ]);
+            if (!$menuItem->exists) {
+                $menuItem->fill([
+                    'target'     => '_self',
+                    'icon_class' => 'voyager-play',
+                    'color'      => null,
+                    'parent_id'  => $adminMenuItem->id,
+                    'order'      => $count++,
+                ])->save();
+            }
         // ------------------- Menu Landing Page ----------------------------------------
         // -------------------------------------------------
         $menu = Menu::where('name', 'LandingPage')->firstOrFail();
@@ -212,5 +241,61 @@ class MenuItemsTableSeeder extends Seeder
             ])->save();
         }
         // Menu Social ----------------------------------------
+
+
+
+        // crud -----------
+          //-------------------------------------------------
+        Menu::firstOrCreate([
+        'name' => 'search',
+        ]);
+            $menu = Menu::where('name', 'search')->firstOrFail();
+            $count=1;
+            $menuItem = MenuItem::firstOrNew([
+                'menu_id' => $menu->id,
+                'title'   => 'Listar Search',
+                'url'     => 'admin/search/1',
+                'route'   => null
+            ]);
+            if (!$menuItem->exists) {
+                $menuItem->fill([
+                    'target'     => '_self',
+                    'icon_class' => null,
+                    'color'      => null,
+                    'parent_id'  => null,
+                    'order'      => $count++,
+                ])->save();
+            }
+
+            $menuItem = MenuItem::firstOrNew([
+                'menu_id' => $menu->id,
+                'title'   => 'divider',
+                'url'     => null,
+                'route'   => null
+            ]);
+            if (!$menuItem->exists) {
+                $menuItem->fill([
+                    'target'     => '_self',
+                    'icon_class' => null,
+                    'color'      => null,
+                    'parent_id'  => null,
+                    'order'      => $count++,
+                ])->save();
+            }
+            $menuItem = MenuItem::firstOrNew([
+                'menu_id' => $menu->id,
+                'title'   => 'setting',
+                'url'     => null,
+                'route'   => null
+            ]);
+            if (!$menuItem->exists) {
+                $menuItem->fill([
+                    'target'     => '_blank',
+                    'icon_class' => null,
+                    'color'      => null,
+                    'parent_id'  => null,
+                    'order'      => $count++,
+                ])->save();
+            }
     }
 }
