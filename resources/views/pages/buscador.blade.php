@@ -87,6 +87,8 @@
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnHV6QtGETar9olguruwVjjcDAFhrV-sg&callback=initMap&libraries=&v=weekly" defer></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
+
         <script>
             let map, infoWindow, marker, mylat, mylng, overview;
             let labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -197,15 +199,17 @@
                 //----------------------- Buscador ---------------------------------
                 //-------------------------------------------------------------------
                 const styleControl = document.getElementById("style-selector-control");
-                global_search=null;
                 map.controls[google.maps.ControlPosition.TOP_CENTER].push(styleControl);
-                global_infowindow=null;
+
+                
+                
                 document.getElementById("myboton").addEventListener("click", () => {
+                    global_infowindow=null;
+                    global_search=null;
                     map.setZoom(14);
                     var busvar =  document.getElementById("mytext").value;
                     var urli = '{{ route('search_first', ':code') }}';
                     urli = urli.replace(':code', busvar);
-                    console.log(urli);
                     $.ajax({
                         url: urli,
                         success: function (response) {
@@ -364,7 +368,34 @@
                     });
                 });
 
-                
+            if (annyang) {
+                        // Let's define a command.
+                const commands = {
+                    'alejar': () => { 
+                            mizoom = map.getZoom();
+                            console.log('alejando el mapa, con: '+mizoom); 
+                            map.setZoom(mizoom - 2);
+                            console.log('alejando el mapa, con: '+mizoom); 
+                        },
+                    'acercar': () => { 
+                            mizoom = map.getZoom();
+                            console.log('acercando el mapa, con: '+mizoom); 
+                            map.setZoom(mizoom + 2);
+                            console.log('acercanado el mapa, con: '+mizoom); 
+                        },
+                    // 'buscar *search': searchs,
+                };
+                var searchs = function(search) {
+                    console.log(search);
+                 }
+
+                // Add our commands to annyang
+                annyang.addCommands(commands);
+                annyang.setLanguage('es-BO');
+                // Start listening.
+                annyang.debug();
+                annyang.start();
+		    }
         </script>
     </body>
 </html>

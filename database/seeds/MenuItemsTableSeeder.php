@@ -249,7 +249,7 @@ class MenuItemsTableSeeder extends Seeder
         Menu::firstOrCreate([
         'name' => 'searchs',
         ]);
-            $menu = Menu::where('name', 'search')->firstOrFail();
+            $menu = Menu::where('name', 'searchs')->firstOrFail();
             $count=1;
             $menuItem = MenuItem::firstOrNew([
                 'menu_id' => $menu->id,

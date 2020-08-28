@@ -18,6 +18,7 @@ class egis extends Command
     public function handle()
     {
         $this->call('key:generate');
+        // $this->call('migrate:reset');
         $this->call('migrate:refresh');
         $this->call('storage:link');
         $this->call('db:seed');
